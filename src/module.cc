@@ -49,12 +49,16 @@ void work_with_table(const pybind11::handle &reader) {
                                 to_table_result.status().ToString());
   }
 
-  auto final_table = to_table_result.ValueUnsafe();
+  auto table = to_table_result.ValueUnsafe();
 
   // And print it out so we can check we have the right result
-  std::cout << "Got Table" << std::endl;
-  std::cout << final_table->ToString() << std::endl;
+  std::cout << "Got Table: " << std::endl;
+  std::cout << table->ToString() << std::endl;
 
+  std::string col_name = "x";
+  auto col = table->GetColumnByName(col_name);
+  std::cout << "Got column `" << col_name << "` which has " << col->num_chunks()
+            << " chunks and " << col->length() << " rows." << std::endl;
   ///
   /// Part 3: Release the stream if needed
   ///

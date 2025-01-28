@@ -34,6 +34,26 @@ reader = pa.RecordBatchReader.from_batches(tbl.schema, tbl.to_batches())
 example.work_with_table(reader)
 ```
 
+Which, when run, prints:
+
+```sh
+Got Table:
+x: int64
+----
+x:
+  [
+    [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  ]
+
+Got column `x` which has 1 chunks and 5 rows.
+```
+
 ## Development
 
 I like to have [clangd](https://clangd.llvm.org) while I work and this is what's needed for that:

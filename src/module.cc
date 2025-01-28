@@ -14,8 +14,13 @@ void work_with_table(const pybind11::handle &reader) {
         "Expected object to implement _export_to_c interface.");
   }
 
+  /// This is a three-step process:
+  /// 1. Export our RecordBatchReader as an ArrowArrayStrem
+  /// 2. Import the ArrowArrayStream back and convert to a Table
+  /// 3. Clean up after ourselves
+
   ///
-  /// Part 1: Export the PyArrow table over C Stream Interface
+  /// Part 1: Export the PyArrow RecordBatchReader over C Stream Interface
   ///
 
   // Create an ArrowArrayStream struct to hold the stream we export

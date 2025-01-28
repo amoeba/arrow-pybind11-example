@@ -8,6 +8,13 @@
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
+void throw_not_ok(const arrow::Status &st) {
+  if (!st.ok()) {
+    throw pybind11::value_error("Unexpected error from arrow-c++: " +
+                                st.ToString());
+  }
+}
+
 void work_with_table(const pybind11::handle &reader) {
   if (!pybind11::hasattr(reader, "_export_to_c")) {
     throw pybind11::type_error(
@@ -39,20 +46,13 @@ void work_with_table(const pybind11::handle &reader) {
 
   // Create a RecordBatchReader from the stream
   auto import_result = arrow::ImportRecordBatchReader(&c_stream);
+  throw_not_ok(import_result.status());
 
-  if (!import_result.ok()) {
-    throw pybind11::value_error("Unexpected error from arrow-c++: " +
-                                import_result.status().ToString());
-  }
   auto record_batch_reader = import_result.ValueUnsafe();
 
   // Convert the RecordBatchReader into a Table
   auto to_table_result = record_batch_reader->ToTable();
-
-  if (!to_table_result.ok()) {
-    throw pybind11::value_error("Unexpected error from arrow-c++: " +
-                                to_table_result.status().ToString());
-  }
+  throw_not_ok(to_table_result.status());
 
   auto table = to_table_result.ValueUnsafe();
 
